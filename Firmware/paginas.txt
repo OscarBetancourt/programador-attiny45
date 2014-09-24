@@ -1,0 +1,16 @@
+
+-->>Quemador http://ttde.uniandes.edu.co/ttdewikim1/index.php/VUSBTINY#Sobre_el_programador 
+
+-->>Quemador http://www.obdev.at/products/vusb/index.html
+
+-->>http://www.simpleavr.com/avr/vusbtiny
+
+-->>http://www.itux.co.za/2012/02/programming-attiny45-and-attiny2313s-using-usbtinyisp-and-and-avrdude/ --
+
+-->>http://ttde.uniandes.edu.co/ttdewikim1/index.php/USBTINY
+
+--Fusibles quemador -->>http://www.engbedded.com/fusecalc/
+
+
+
+

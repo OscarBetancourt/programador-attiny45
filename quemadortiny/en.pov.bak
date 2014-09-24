@@ -1,0 +1,133 @@
+/* DIODE_LIB_LED_7SEG_19x13x8mm by Cesar Updated April 30-2009 */
+//#macro DIODE_LIB_LED_7SEG_19x13x8mm() /* Inicio del macro solo EAGLE3D*/
+/* Definición de las dimensiones del paquete en mm como variables locales
+Según el datasheet del display de 7 segmentos */
+// Datasheet values
+// Box   
+#local L=12.7;    /*  (1) Length_mm (Longitud del paquete) */
+#local W=19;     /*  (2) Width_mm  (Ancho del paquete) */
+#local H=8;        /*  (3) Hight_mm  (Alto del paquete) */
+// Pin
+#local pinDiameter = 0.5; /* (4) Diameter of pins (Diámetro de los pines) */
+#local pinSep = 2.54;         /* (5) Separation between pins (Separación entre pines) */
+#local pinHight = 6;           /* (6) Total height of the pin (Altura total del pin)   */
+#local pin1x = -5.08;         /*  (7) X position of the first pin (Posición X del primer pin) */
+#local pin1z = -7.62;         /*  (7) Z position of the first pin (Posición Y del primer pin) */
+// Support
+#local hSupport = 1.2;    /* (8) Height of Support (Altura del soporte) */
+#local lSuppTop = 1.88;  /* (9) Length Support Top (longitud de la tapa del soporte) */
+#local l1SuppBase = 1;     /* (10) Length1 Support Base (longitud1 de la base del soporte) */
+#local l2SuppBase = 0.5;     /* (10) Length2 Support Base (longitud2 de la base del soporte) */   
+   
+/* Definicion de colores */
+// RGB  Colors
+#local Orange01_rgb = rgb< 1, 0.65, 0 >;
+#local Black_rgb         = rgb< 0, 0, 0 >;
+#local Grey_rgb          = rgb< 0.5, 0.5, 0.5 >;
+#local White_rgb        = rgb< 1, 1, 1 >;
+#local Red_rgb            = rgb< 1, 0, 0 >;
+#local Green0_5_rgb = rgb< 0, 0.5, 0 >;
+#local Blue_rgb           = rgb< 0, 0, 1 >;
+#local Transparent1_rgbf  = rgbf<0.90, 0.90, 0.90, 0.999 >;  // 4to valor es la cantidad de transparencia filtrada
+#local Col_Amber_88_rgbf = rgbf<0.90, 0.90, 0.50, 0.999>;
+/*  ////////////////////////
+Suprimir para EAGLE3D */       
+background { color White_rgb } // Fondo de la escena
+camera {
+        location < 0, 2*H, -2*W >             /* La cámara se ubica a dos veces la altura del paquete y acercada a dos veces el lado
+más largo del paquete*/
+        look_at  < 0, -(pinHight/2),  0 >   /* punto de la escena a la que apunta finalmente. en este caso en el centro de los ejes
+coordenados pero desplazada   debajo del plano X_Z la mitad de la longitud del pin    */
+  }
+light_source {  <2, 4, -3> color White_rgb }
+///////////////////////////////
+// Objects
+/* Object #1: Código para crear un pin, cilindro de color plata de 6 mm de alto y 0.25mm de radio*/
+#local onePin =                                                       // Nombre del objeto (un solo Pin)
+object {                                          // Inicio del objeto (un solo Pin)
+    cylinder {                                    // Inicio del cilindro14
+      < 0, pinHight-4, 0 >,   /* Centro del disco de la tapa por encima (2mm) del plano X_Z o board */
+      < 0, pinHight-10, 0 >   /* Centro del  disco de la base, por debajo (-4mm) del plano X_Z */
+      pinDiameter/2            /* Radius of the cylinder (radio del cilindro) */
+      pigment { Black_rgb }  /* Color */
+    }                                                    // Fin del cilindro
+}                                                                  // Fin del objeto (un solo Pin)
+/* Object #2:  código para crear el soporte en L del display */
+#local oneSupport =
+object {  
+prism {
+    linear_sweep
+linear_spline
+    hSupport,              /* altura por encima (2mm) del plano X_Z o board */
+    0,                             /* altura por debajo (0mm) del plano X_Z o board */
+    6,                             /* número de puntos de la huella en forma de L*/
+    < 0, 0 >,                        /* 1er coordenada del plano X_Z */
+    < l1SuppBase, 0 >,     /* 2da coordenada del plano X_Z */
+    < l1SuppBase, l2SuppBase >,   /* 3ra coordenada del plano X_Z */
+    < l2SuppBase, l2SuppBase >,   /* 4ta coordenada del plano X_Z */
+    < l2SuppBase, l1SuppBase >,   /* 5ta coordenada del plano X_Z */
+    < 0, l1SuppBase >             /* 6ta coordenada del plano X_Z */
+    pigment { White_rgb }   /* Color */
+}
+}   
+/* Object #3: Caja01*/  
+#local box01 =  
+object{  
+box {  // caja1 del componente
+    < -L/2, hSupport, -W/2 >,                 // Corner1  
+    < +L/2, +H, +W/2 >                             // Corner2
+    pigment { Transparent1_rgbf }   // Color Code
+}      // Fin de la caja1
+}
+/* Object #4: Caja02*/  
+#local box02 =  
+object{  
+box { // Piel del paquete
+    < -L/2, H, -W/2 >,
+    < +L/2, H+0.1, +W/2 >
+    pigment {
+      image_map{"skin7seg.jpg" once}
+      rotate< 90, 0, 0 > scale< 12.7, 1, 19 > translate< -L/2, 0, -W/2 >
+    }
+}        // Fin de la caja2
+}15
+/* Object5: código para poner un texto */
+#local logo =  
+object{  
+text {
+    ttf                     /* TrueType font */
+    "arial.ttf",            /* font name */
+    "  7 seg",              /* string name */
+    0,                      /* Espesor en Z, (The thickness of the extrusion in Z) */
+    0                       /* espacio entre caracteres */   
+    scale < 3, 3, 2 >
+    pigment { Black_rgb }  /* Color */
+}
+}
+// Union de objetos para crear el paquete
+//union { // Inicio de la union solo EAGLE3D
+object{ box01 translate < 0, 0, 0> }  
+object{ box02 translate < 0, 0, 0> }  
+// Puesta de pines parte de abajo
+object{ onePin translate < pin1x,0, pin1z> }  /* (Pin base) Coloca el 1er pin parte inferior izquierda */
+object{ onePin translate < pin1x+pinSep*1,  0, pin1z> }  /* Coloca el 2do pin desplazandolo en X=2.54 mm a la derecha del
+Pin base */
+object{ onePin translate < pin1x+pinSep*2, 0, pin1z> }  /* Coloca el 3cer pin desplazandolo 5.08 mm (2.54*2) */
+object{ onePin translate < pin1x+pinSep*3, 0, pin1z> }  /* Coloca el 4to pin desplazandolo 7.62 mm (2.54*3) */
+object{ onePin translate < pin1x+pinSep*4, 0, pin1z> }  /* Coloca el 5to pin desplazandolo 10.16 mm (2.54*4) */
+// Puesta de pines parte de arriba (por simetria)
+object{ onePin translate < pin1x+pinSep*4, 0, -pin1z> }  /* Coloca el 6to pin desplazandolo 10.16 mm parte superior derecha
+del Pin base y positiva la corrdenada Z */
+object{ onePin translate < pin1x+pinSep*3, 0, -pin1z> }  /* Coloca el 7mo pin desplazandolo 7.62 mm  */
+object{ onePin translate < pin1x+pinSep*2, 0, -pin1z> }  /* Coloca el 8vo pin desplazandolo 5.08 mm */
+object{ onePin translate < pin1x+pinSep*1,  0, -pin1z> }  /* Coloca el 9no pin desplazandolo 2.54 mm */
+object{ onePin translate < pin1x,0, -pin1z> }                       /* Coloca el 10mo pin */
+// Puesta de patillas de soporte
+object{ oneSupport rotate<0, 0, 0>   translate< -L/2, 0, -W/2 > } // esquina abajo izquierda
+object{ oneSupport rotate<0, -90, 0> translate< L/2, 0, -W/2 > } // esquina abajo derecha
+object{ oneSupport rotate<0,180, 0>  translate< L/2, 0, W/2 > } // esquina arriba izquierda
+object{ oneSupport rotate<0, 90, 0>  translate< -L/2, 0, W/2 > } // esquina arriba derecha
+// Puesta del logo
+object { logo rotate< 0, 0, 0 >  translate< -L/2+1, 4, -W/2 > } // esquina de la parte inferior izquierda  
+//} // Fin de la union solo EAGLE3D
+//#end  // Fin del macro solo EAGLE3D  
